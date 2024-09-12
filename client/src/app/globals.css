@@ -1,0 +1,53 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+	--foreground-rgb: 0, 0, 0;
+	--background-start-rgb: 214, 219, 220;
+	--background-end-rgb: 255, 255, 255;
+	--ui-color: 64, 56, 39;
+}
+
+body {
+	color: rgb(var(--foreground-rgb));
+	background: linear-gradient(to bottom,
+			transparent,
+			rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+}
+
+
+main {
+	min-width: 230mm;
+	margin: 0 auto;
+}
+
+.ui_txt, #toolbar {
+	font-family: Lobster, cursive;
+	letter-spacing: 1px;
+	line-height: 1.5;
+	color: rgb(var(--ui-color));
+}
+
+footer {
+	text-shadow: 1px 1px 2px rgba(70, 65, 65, 0.2);
+	text-transform: uppercase;
+}
+
+nav {
+	text-shadow: 1px 1px 2px rgba(182, 174, 174, 0.4);
+	text-transform: uppercase;
+}
+
+
+
+.pen-btn
+{
+	color: rgb(var(--background-start-rgb));
+	margin-right: 1rem;
+	box-shadow: 1px 1px 1px rgba(182, 174, 174, 0.2);
+	transform: skewX(-6deg) skewY(2deg);
+	&:hover {
+		box-shadow: 1px 1px 2px rgba(255, 253, 253, 0.5);
+	}
+}

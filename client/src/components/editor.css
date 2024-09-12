@@ -1,0 +1,44 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.ql-container {
+	font-family:'Times New Roman', Times, serif;
+	font-size: 11pt;
+	padding: 5px;
+	margin: 0 auto;
+	min-width: 215mm;
+	width: 215mm;
+}
+
+.ql-editor {
+	width: 210mm;
+	min-height: 297mm;
+	line-height: 1.5;
+	background: rgb(var(--background-end-rgb));
+	padding: 24mm 16mm 16mm 16mm;
+	margin: 0 auto;
+}
+
+.ql-toolbar {
+	border: none !important;
+	border-bottom: 1px solid #ccc !important;
+	position: sticky;
+	top: 0;
+	background-color: rgb(var(--background-end-rgb));
+	z-index: 1;
+	min-width: 215mm;
+	width: 215mm;
+	margin: 0 auto;
+}
+
+.cstomBtn {
+	display: flex;
+	max-width: 70px;
+	align-items: center;
+
+	gap: 1rem;
+	font-size: .8rem;
+	right: 2rem;
+	position: absolute;
+}
