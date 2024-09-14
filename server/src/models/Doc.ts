@@ -16,8 +16,7 @@ const DocmntSchema: Schema = new Schema({
         required: true
     },
     content: {
-        type: String,
-        default: ''
+        type: Object,
     },
     author: {
         type: Schema.Types.ObjectId,
@@ -34,4 +33,4 @@ const DocmntSchema: Schema = new Schema({
     }
 }, { timestamps: true });
 
-export default mongoose.model<IDocmnt>('Docmnt', DocmntSchema);
+export default mongoose.model<IDocmnt>('txts', DocmntSchema);

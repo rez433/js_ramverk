@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import localFont from "next/font/local";
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -37,6 +39,7 @@ export default function RootLayout({
 				className={`${lobster.variable} antialiased min-h-screen`}
 			>
 				<main className="flex flex-col items-center justify-between ui_txt">
+					<ToastContainer />
 					<Navbar />
 					{children}
 				</main>

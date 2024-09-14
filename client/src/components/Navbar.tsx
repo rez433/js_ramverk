@@ -15,8 +15,12 @@ export default function Navbar() {
                 <div>
                     {/* {session ? ( */}
                         <>
-                            <Link href="/dashboard" className="text-white mr-4">
-                                Dashboard
+                            <Link href="/dashboard">
+                                <button
+                                    className="py-2 px-2 rounded mr-2 pen-btn"
+                                >
+                                    Dashboard
+                                </button>
                             </Link>
                             <button
                                 onClick={() => signOut()}

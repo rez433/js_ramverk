@@ -2,86 +2,126 @@ import { Request, Response } from 'express';
 import Docmnt, { IDocmnt } from '../models/Doc';
 import User from '../models/Usr';
 
-const getDox = async (req: Request, res: Response) => {
+
+export const getDox = async (req: Request, res: Response) => {
     try {
-        const dox = await Docmnt.find().populate('author', 'name');
+        const userid = req.params.userid;
+        console.log('fetching documents for user with id: ', userid);
+
+        if (!userid) {
+            return res.status(400).json({ message: 'User userid is required' });
+        }
+
+        const dox = await Docmnt.find({ author: userid });
+
+        if (dox.length === 0) {
+            return res.status(404).json({ message: 'No documents found for this author' });
+        }
+
         res.json(dox);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching documents', error });
+        res.status(500).json({ message: 'Error fetching documents', error: error.message });
     }
 };
 
-const getDoc = async (req: Request, res: Response) => {
+
+export const getDoc = async (req: Request, res: Response) => {
+    const docid = req.params.id;
+    console.log('fetching document with id: ', docid);
+
     try {
-        const doc = await Docmnt.findById(req.params.id).populate('author', 'name');
+        const doc = await Docmnt.findOne({ _id: docid })
+
         if (!doc) {
             return res.status(404).json({ message: 'Document not found' });
         }
-        res.json(document);
+
+        if (doc instanceof Error) {
+            console.error('Error retrieving document:', doc.message);
+            return res.status(500).json({ message: 'Error fetching document' });
+        }
+
+        res.json(doc);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching document', error });
+        console.error('Unexpected error:', error.message);
+        return res.status(500).json({ message: 'Error fetching document' });
     }
 };
 
-const cr8Doc = async (req: Request, res: Response) => {
+
+
+export const cr8Doc = async (req: Request, res: Response) => {
     try {
         const { title, content, authorId } = req.body;
+
+        if (!title || !content || !authorId) {
+            return res.status(400).json({ message: 'Missing required fields: title, content, or authorId' });
+        }
+
         const newDocmnt = new Docmnt({
             title,
             content,
             author: authorId,
         });
+
         await newDocmnt.save();
 
-        await User.findByIdAndUpdate(authorId, { $push: { documents: newDocmnt._id } });
+        const updatedUser = await User.findByIdAndUpdate(authorId, { $push: { documents: newDocmnt._id } }, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'Author not found' });
+        }
 
         res.status(201).json(newDocmnt);
     } catch (error) {
-        res.status(500).json({ message: 'Error creating document', error });
+        console.error('Error creating document:', error);
+        res.status(500).json({ message: 'Error creating document', error: error.message });
     }
 };
 
-const upd8Doc = async (req: Request, res: Response) => {
+export const upd8Doc = async (req: Request, res: Response) => {
+    const docid = req.params.id;
+
+    console.log('patching document with id: ', docid);
+
     try {
-        const { title, content, version } = req.body;
-        const doc = await Docmnt.findById(req.params.id);
+        const { title, content } = req.body;
+        const doc = await Docmnt.findById(docid);
 
         if (!doc) {
             return res.status(404).json({ message: 'Document not found' });
-        }
-
-        if (doc.version !== version) {
-            return res.status(409).json({ message: 'Document version conflict' });
         }
 
         doc.title = title;
         doc.content = content;
-        doc.version += 1;
+        doc.version += 0.1
 
-        await doc.save();
-        res.json(document);
+        const updoc = await doc.save();
+        res.json(updoc);
     } catch (error) {
-        res.status(500).json({ message: 'Error updating document', error });
+        res.status(500).json({ error });
     }
 };
 
-const del8Doc = async (req: Request, res: Response) => {
+export const del8Doc = async (req: Request, res: Response) => {
+    const docid = req.params.id
+
     try {
-        const doc = await Docmnt.findById(req.params.id);
+        const doc = await Docmnt.findById(docid);
 
         if (!doc) {
             return res.status(404).json({ message: 'Document not found' });
         }
 
-        await Docmnt.findByIdAndDelete(req.params.id);
+        await Docmnt.findByIdAndDelete(docid);
 
         // Remove document from user's documents array
         await User.updateMany(
-            { documents: req.params.id },
-            { $pull: { documents: req.params.id } }
+            { documents: docid },
+            { $pull: { documents: docid } }
         );
 
-        res.json({ message: 'Document deleted successfully' });
+        res.json({ message: `Document with id ${docid} deleted successfully` });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting document', error });
     }
@@ -112,12 +152,3 @@ const addCoAuthor = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Error adding co-author', error });
     }
 };
-
-module.exports = {
-    getDox,
-    getDoc,
-    cr8Doc,
-    del8Doc,
-    upd8Doc,
-    addCoAuthor
-}
