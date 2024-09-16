@@ -28,11 +28,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Install pnpm
-      run: |
-        corepack enable pnpm
-        corepack prepare pnpm@latest --activate
-
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.7.0
       with:
@@ -41,14 +36,14 @@ jobs:
     - name: Install dependencies
       run: |
         cd server
-        pnpm i
+        npm install
 
     - name: Build project (if present)
       run: |
         cd server
-        pnpm build --if-present
+        npm run build --if-present
 
     - name: Run tests
       run: |
         cd server
-        pnpm test
+        npm run test
