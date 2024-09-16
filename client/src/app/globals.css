@@ -17,8 +17,11 @@ body {
 }
 
 
-main {
+main,
+nav,
+footer {
 	min-width: 230mm;
+	max-width: 280mm;
 	margin: 0 auto;
 }
 
@@ -35,6 +38,7 @@ footer {
 }
 
 nav {
+	height: 5rem;
 	text-shadow: 1px 1px 2px rgba(182, 174, 174, 0.4);
 	text-transform: uppercase;
 }
@@ -44,10 +48,14 @@ nav {
 .pen-btn
 {
 	color: rgb(var(--background-start-rgb));
+	width: 5.5rem;
+	font-size: .8rem;
 	margin-right: 1rem;
-	box-shadow: 1px 1px 1px rgba(182, 174, 174, 0.2);
-	transform: skewX(-6deg) skewY(2deg);
+	box-shadow: 1px 1px 2px rgba(255, 253, 253, 0.5);
+	
+	/* transform: skewX(-3deg) skewY(2deg); */
 	&:hover {
-		box-shadow: 1px 1px 2px rgba(255, 253, 253, 0.5);
+		box-shadow: 1px 1px 1px rgba(182, 174, 174, 0.2);
+		font-size: .76rem;
 	}
 }

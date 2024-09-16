@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest --coverage"
   },
   "dependencies": {
     "next": "14.2.10",
@@ -14,16 +15,25 @@
     "quill": "^2.0.2",
     "react": "^18",
     "react-dom": "^18",
+    "react-toastify": "^10.0.5",
     "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-v8": "^2.1.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.10",
+    "jsdom": "^25.0.0",
     "postcss": "^8",
+    "react-router-dom": "^6.26.2",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.1.1"
   }
 }

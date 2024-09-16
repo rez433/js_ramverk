@@ -1,43 +1,60 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react';
-import 'quill/dist/quill.snow.css';
+import { useEffect, useRef, useState } from 'react'
+import Quill from 'quill'
+import { Delta } from 'quill/core'
+import 'quill/dist/quill.snow.css'
 import './editor.css'
 
-const Editor: React.FC = () => {
-    const editorRef = useRef<HTMLDivElement | null>(null);
-    const [content, setContent] = useState<string | object>('');
+interface EditorProps {
+    docid: any
+    content: any
+    setContent: (content: any) => void
+    setQtxt: (qtxt: any) => void
+}
+
+
+const Editor = ({ content, setContent, setQtxt }: EditorProps) => {
+    const editorRef = useRef<HTMLDivElement | null>(null)
+    const [quill, setQuill] = useState<Quill | null>(null)
 
     useEffect(() => {
-        const loadQuill = async () => {
-            if (typeof window !== 'undefined' && editorRef.current) {
-                const Quill = (await import('quill')).default;
-                const quill = new Quill(editorRef.current, {
-                    theme: 'snow',
-                    modules: {
-                        toolbar: '#toolbar',
-                    }
-                });
-
-                quill.on('text-change', () => {
-                    setContent(quill.getSemanticHTML());
-                    console.log('content is : ', quill.getSemanticHTML())
-                });
-
-                const printBtn = document.querySelector('.prnt')
-                printBtn?.addEventListener('click', () => {
-                    console.log(quill.getSemanticHTML())
-                })
-                const saveBtn = document.querySelector('.savebtn')
-                saveBtn?.addEventListener('click', () => {
-                    console.log(quill.getSemanticHTML())
-                })
+        if (typeof window !== 'undefined' && editorRef.current && !quill) {
+            const quil = new Quill(editorRef.current, {
+                theme: 'snow',
+                modules: {
+                    toolbar: '#toolbar',
+                }
+            })
+            
+            if (quil.getLength() <= 1)
+            {
+                quil.updateContents(content)
+                setQtxt(quil.root.innerHTML)
             }
-        };
+
+            setQuill(quil)
+        }
+    }, [])
 
 
-        loadQuill();
-    }, []);
+    useEffect(() => {
+        if (quill == null) return
+
+        const handler = (delta: Delta, oldDelta: Delta, source: string) => {
+            if (source !== 'user') return
+            setContent(quill.getContents())
+            setQtxt(quill.root.innerHTML)
+            console.log('oopsi is: ', quill.getContents())
+        }
+
+        quill?.on('text-change', handler)
+
+        return () => {
+            quill?.off('text-change', handler)
+        }
+    }, [quill])
+
 
     return (
         <>
@@ -56,16 +73,11 @@ const Editor: React.FC = () => {
                 </select>
                 <button className="ql-list" value="ordered"></button>
                 <button className="ql-list" value="bullet"></button>
-                <div className='cstomBtn'>
-                    <button className="prnt">Print</button>
-                    <button className="savebtn">Save</button>
-                </div>
             </div>
 
             <div ref={editorRef} />
         </>
-    );
-};
-
+    )
+}
 
 export default Editor
