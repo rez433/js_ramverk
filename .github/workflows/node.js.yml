@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "kmom03" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "kmom03" ]
 
 jobs:
   build:
@@ -35,15 +35,15 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd server
+        cd ../../server
         npm install
 
     - name: Build project (if present)
       run: |
-        cd server
+        cd ../../server
         npm run build --if-present
 
     - name: Run tests
       run: |
-        cd server
+        cd ../../server
         npm run test
