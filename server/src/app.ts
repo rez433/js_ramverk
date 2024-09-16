@@ -22,4 +22,11 @@ server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
 
+
+// process.on('SIGTERM', async () => {
+//     console.log('SIGTERM signal received: closing HTTP server')
+//     await mongoose.connection.close();
+//     process.exit(0);
+// })
+
 export default app

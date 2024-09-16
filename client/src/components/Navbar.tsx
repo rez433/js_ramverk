@@ -2,8 +2,14 @@
 
 import Link from 'next/link'
 import { signIn, signOut, useSession } from 'next-auth/react'
+import { useState } from 'react'
 
-export default function Navbar() {
+
+interface NavbarProps {
+    isAuthenticated: boolean
+    setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
+  }
+export default function Navbar( {isAuthenticated, setIsAuthenticated}: NavbarProps ) {
     // const { data: session } = useSession()
 
     return (
@@ -14,6 +20,7 @@ export default function Navbar() {
                 </Link>
                 <div>
                     {/* {session ? ( */}
+                    {isAuthenticated ? (
                         <>
                             <Link href="/dashboard">
                                 <button
@@ -23,16 +30,22 @@ export default function Navbar() {
                                 </button>
                             </Link>
                             <button
-                                onClick={() => signOut()}
+                                onClick={() => {
+                                    setIsAuthenticated(false)
+                                    console.log("Logout")
+                                }}
                                 className="py-2 px-2 rounded pen-btn"
                             >
                                 Log out
                             </button>
                         </>
-                    {/* ) : ( */}
+                    ) : (
                         <>
                             <button
-                                onClick={() => signIn('google')}
+                                onClick={() => {
+                                    setIsAuthenticated(true)
+                                    console.log("Login")
+                                }}
                                 className="py-2 px-2 rounded mr-2 pen-btn"
                             >
                                 Log in
@@ -44,7 +57,7 @@ export default function Navbar() {
                                 Sign up
                             </button> */}
                         </>
-                    {/* )} */}
+                    )}
                 </div>
             </div>
         </nav>

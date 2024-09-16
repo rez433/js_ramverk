@@ -1,10 +1,10 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IUser extends Document {
-    name: string;
-    email: string;
-    role: 'author' | 'co_author';
-    documents: Schema.Types.ObjectId[];
+    name: string
+    email: string
+    role: 'author' | 'co_author'
+    documents: Schema.Types.ObjectId[]
 }
 
 const UserSchema: Schema = new Schema({
@@ -25,6 +25,6 @@ const UserSchema: Schema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Document'
     }]
-});
+})
 
-export default mongoose.model<IUser>('users', UserSchema);
+export default mongoose.model<IUser>('users', UserSchema)

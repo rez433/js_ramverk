@@ -13,36 +13,36 @@ export default function EditorPage() {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [qtxt, setQtxt] = useState('')
-    const params = useParams();
-    const docid = params.id;
+    const params = useParams()
+    const docid = params.id
 
     useEffect(() => {
         if (docid && docid !== 'new') {
 
             const fetchDocument = async () => {
                 try {
-                    const response = await fetch(`http://localhost:5051/api/doc/${docid}`);
+                    const response = await fetch(`http://localhost:5051/api/doc/${docid}`)
                     if (!response.ok) {
-                        throw new Error('Failed to fetch document');
+                        throw new Error('Failed to fetch document')
                     }
 
-                    const data = await response.json();
+                    const data = await response.json()
 
-                    setTitle(data.title);
-                    setContent(data.content);
+                    setTitle(data.title)
+                    setContent(data.content)
 
-                    setIsLoading(false);
+                    setIsLoading(false)
                 } catch (err) {
-                    setError('Error fetching document. Please try again later.');
-                    setIsLoading(false);
+                    setError('Error fetching document. Please try again later.')
+                    setIsLoading(false)
                 }
-            };
+            }
 
-            fetchDocument();
+            fetchDocument()
         } else {
-            setIsLoading(true);
+            setIsLoading(true)
         }
-    }, []);
+    }, [])
 
 
     if (isLoading) {
@@ -69,7 +69,7 @@ export default function EditorPage() {
                 </body>
             </html>
         `)
-    };
+    }
 
 
     const handleSave = async () => {
@@ -84,7 +84,7 @@ export default function EditorPage() {
         })
 
         if (!(res).ok) {
-            throw new Error('Failed to delete document');
+            throw new Error('Failed to delete document')
         }
 
         toast.success('Document saved successfully!', {
@@ -95,7 +95,7 @@ export default function EditorPage() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-        });
+        })
     }
 
     return (

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { toast } from 'react-toastify'
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'
 
 
 interface Document {
@@ -14,14 +14,13 @@ interface Document {
 }
 
 
-
 export default function Dashboard() {
-    const router = useRouter();
+    const router = useRouter()
     const api = "http://localhost:5051/api"
     const [documents, setDocuments] = useState<Document[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const userid = '668cedaaa3b2e1507b0d54e3';
+    const userid = '668cedaaa3b2e1507b0d54e3'
 
 
 
@@ -56,10 +55,10 @@ export default function Dashboard() {
             })
 
             if (!res.ok) {
-                throw new Error('Failed to delete document');
+                throw new Error('Failed to delete document')
             }
 
-            const delConfirm = await res.json();
+            const delConfirm = await res.json()
             toast.success('Document deleted successfully!', {
                 position: 'top-right',
                 autoClose: 3000,
@@ -68,15 +67,15 @@ export default function Dashboard() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-            });
+            })
 
             setDocuments((prevDocuments) =>
                 prevDocuments.filter((doc) => doc._id !== _id)
-            );
+            )
 
         } catch (error) {
-            toast.error('Error deleting document. Please try again.');
-            console.error('Error:', error);
+            toast.error('Error deleting document. Please try again.')
+            console.error('Error:', error)
         }
     }
 
@@ -92,10 +91,10 @@ export default function Dashboard() {
                     content: {},
                     authorId: userid,
                 }),
-            });
+            })
 
             if (!res.ok) {
-                throw new Error('Failed to create a new document');
+                throw new Error('Failed to create a new document')
             }
 
             res.json().then((newDoc) => {
@@ -105,10 +104,10 @@ export default function Dashboard() {
             })
              
         } catch (error) {
-            setError('Error creating a new document. Please try again later.');
-            console.error('Error:', error);
+            setError('Error creating a new document. Please try again later.')
+            console.error('Error:', error)
         }
-    };
+    }
 
     if (isLoading) {
         return <div className="flex justify-center items-center h-screen">Loading...</div>

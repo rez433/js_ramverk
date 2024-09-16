@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react';
-import Quill from 'quill';
-import { Delta } from 'quill/core';
-import 'quill/dist/quill.snow.css';
+import { useEffect, useRef, useState } from 'react'
+import Quill from 'quill'
+import { Delta } from 'quill/core'
+import 'quill/dist/quill.snow.css'
 import './editor.css'
 
 interface EditorProps {
@@ -15,8 +15,8 @@ interface EditorProps {
 
 
 const Editor = ({ content, setContent, setQtxt }: EditorProps) => {
-    const editorRef = useRef<HTMLDivElement | null>(null);
-    const [quill, setQuill] = useState<Quill | null>(null);
+    const editorRef = useRef<HTMLDivElement | null>(null)
+    const [quill, setQuill] = useState<Quill | null>(null)
 
     useEffect(() => {
         if (typeof window !== 'undefined' && editorRef.current && !quill) {
@@ -25,7 +25,7 @@ const Editor = ({ content, setContent, setQtxt }: EditorProps) => {
                 modules: {
                     toolbar: '#toolbar',
                 }
-            });
+            })
             
             if (quil.getLength() <= 1)
             {
@@ -35,7 +35,7 @@ const Editor = ({ content, setContent, setQtxt }: EditorProps) => {
 
             setQuill(quil)
         }
-    }, []);
+    }, [])
 
 
     useEffect(() => {
@@ -77,8 +77,7 @@ const Editor = ({ content, setContent, setQtxt }: EditorProps) => {
 
             <div ref={editorRef} />
         </>
-    );
-};
-
+    )
+}
 
 export default Editor

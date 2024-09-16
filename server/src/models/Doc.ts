@@ -1,13 +1,13 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IDocmnt extends Document {
-    title: string;
-    content: string;
-    author: Schema.Types.ObjectId;
-    co_authors: Schema.Types.ObjectId[];
-    createdAt: Date;
-    updatedAt: Date;
-    version: number;
+    title: string
+    content: string
+    author: Schema.Types.ObjectId
+    co_authors: Schema.Types.ObjectId[]
+    createdAt: Date
+    updatedAt: Date
+    version: number
 }
 
 const DocmntSchema: Schema = new Schema({
@@ -31,6 +31,6 @@ const DocmntSchema: Schema = new Schema({
         type: Number,
         default: 1
     }
-}, { timestamps: true });
+}, { timestamps: true })
 
-export default mongoose.model<IDocmnt>('txts', DocmntSchema);
+export default mongoose.model<IDocmnt>('txts', DocmntSchema)
