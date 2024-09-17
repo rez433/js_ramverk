@@ -11,10 +11,11 @@ interface EditorProps {
     content: any
     setContent: (content: any) => void
     setQtxt: (qtxt: any) => void
+    emitChanges: (delta: any) => void
+    handleIncomingChanges: (handler: (txts: any) => void) => () => void
 }
 
-
-const Editor = ({ content, setContent, setQtxt }: EditorProps) => {
+const Editor = ({ content, setContent, setQtxt, emitChanges, handleIncomingChanges }: EditorProps) => {
     const editorRef = useRef<HTMLDivElement | null>(null)
     const [quill, setQuill] = useState<Quill | null>(null)
 
@@ -37,24 +38,31 @@ const Editor = ({ content, setContent, setQtxt }: EditorProps) => {
         }
     }, [])
 
-
     useEffect(() => {
         if (quill == null) return
 
         const handler = (delta: Delta, oldDelta: Delta, source: string) => {
             if (source !== 'user') return
+            
+            emitChanges(delta)
             setContent(quill.getContents())
             setQtxt(quill.root.innerHTML)
-            console.log('oopsi is: ', quill.getContents())
         }
 
-        quill?.on('text-change', handler)
+        quill.on('text-change', handler)
 
         return () => {
-            quill?.off('text-change', handler)
+            quill.off('text-change', handler)
         }
-    }, [quill])
+    }, [quill, emitChanges, setContent, setQtxt])
 
+    useEffect(() => {
+        if (quill == null) return
+        
+        return handleIncomingChanges((txts: any) => {
+            quill.updateContents(txts)
+        })
+    }, [quill, handleIncomingChanges])
 
     return (
         <>
