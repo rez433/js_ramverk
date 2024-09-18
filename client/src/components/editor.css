@@ -17,10 +17,10 @@
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
+}
 
-	& div:nth-child(2) {
-		display: none;
-	}
+.qeditor > div:nth-child(2) {
+	display: none;
 }
 
 .ql-editor {
