@@ -6,6 +6,7 @@ import { io, Socket } from 'socket.io-client'
 import { useParams } from 'next/navigation'
 import Editor from '@/components/Editor'
 
+
 export default function EditorPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -52,26 +53,62 @@ export default function EditorPage() {
         return setupSocket()
     }, [docid])
 
-    const handlePrint = () => {
-        console.log('printing: ', qtxt)
-        const prntr = window.open('', '', 'width=800,height=600')
 
-        prntr?.document.write(`
-            <html>
-                <head>
-                    <link media="print" rel="stylesheet" href='../globals.css'>
-                    <link media="print" rel="stylesheet" href='quill/dist/quill.snow.css'>
-                    <link media="print" rel="stylesheet" href='../../components/editor.css'>
-                    <title>${title}</title>
-                </head>
-                <body>${qtxt}</body>
-            </html>
-        `)
+    const handlePrint = () => {
+        const prntr = window.open("prntr", "status=1", 'width=800,height=600')
+    
+        if (prntr) {
+            prntr.document.write(`
+                            <html>
+                                <head>
+                                    <title>${title}</title>
+                                    <style>
+                                        img {
+                                            display: block;
+                                            max-width: 210mm;
+                                            max-height: 297mm;
+                                            width: auto;
+                                            height: auto;
+                                        }
+                                        @page {
+                                            margin: 1in;
+                                            size: 210mm 297mm;
+                                            padding: 24mm 16mm 16mm 16mm;
+                                        }
+                                        @media print {
+                                            table {
+                                                page-break-inside: avoid;
+                                            }
+                                            a[href]:after {
+                                                content: " (" attr(href) ")";
+                                                font-size: 90%;
+                                                color: #333;
+                                            }
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                    <main>
+                                        <div>
+                                            <h1>${title}<h1>
+                                        </div>
+                                        <article>${qtxt}</article>
+                                    </main>
+                                `);
+                                    
+                    
+            prntr.onbeforeprint = () => {
+                prntr.history.replaceState({}, "", `./${title}`);
+            }
+            prntr.document.write('<body onafterprint="self.close()">');
+            prntr.document.write(`</body></html>`)
+            prntr.print();
+        }
     }
 
     const handleSave = async () => {
         // emit the content when save button clicked
-        socket?.emit('update_doc', {'content': content, 'title': title, 'docId': docid})
+        socket?.emit('update_doc', { 'content': content, 'title': title, 'docId': docid })
 
         toast.success('Document saved successfully!', {
             position: 'top-right',
