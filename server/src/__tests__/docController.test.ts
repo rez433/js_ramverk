@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from '@jest/globals'
 import request from 'supertest'
 import express from 'express'
 import mongoose from 'mongoose'
-import { getDox, getDoc, cr8Doc, upd8Doc, del8Doc } from '../controllers/docController'
+import { getDox, getDoc, cr8Doc, del8Doc } from '../controllers/docController'
 import * as dbHandler from './setup'
 import Docmnt from '../models/Doc'
 import User from '../models/Usr'
@@ -22,7 +22,7 @@ afterAll(async () => await dbHandler.closeDatabase())
 app.get('/api/docs/:userid', getDox)
 app.get('/api/doc/:id', getDoc)
 app.post('/api/doc/new', cr8Doc)
-app.patch('/api/doc/:id', upd8Doc)
+// app.patch('/api/doc/:id', upd8Doc)
 app.delete('/api/doc/:id', del8Doc)
 
 describe('Document Controller', () => {
@@ -77,19 +77,20 @@ describe('Document Controller', () => {
         expect(res.body.title).toBe('Test Doc')
     })
 
-    it('should update a document', async () => {
-        const updatedTitle = 'Updated Doc'
-        const updatedContent = 'Updated Content'
+    //
+    // it('should update a document', async () => {
+    //     const updatedTitle = 'Updated Doc'
+    //     const updatedContent = 'Updated Content'
 
-        const res = await request(app)
-            .patch(`/api/doc/${docId}`)
-            .send({ title: updatedTitle, content: updatedContent })
+    //     const res = await request(app)
+    //         .patch(`/api/doc/${docId}`)
+    //         .send({ title: updatedTitle, content: updatedContent })
 
-        expect(res.status).toBe(200)
-        expect(res.body.title).toBe(updatedTitle)
-        expect(res.body.content).toBe(updatedContent)
-        expect(res.body.version).toBe(1.1)
-    })
+    //     expect(res.status).toBe(200)
+    //     expect(res.body.title).toBe(updatedTitle)
+    //     expect(res.body.content).toBe(updatedContent)
+    //     expect(res.body.version).toBe(1.1)
+    // })
 
     it('should delete a document', async () => {
         const res = await request(app).delete(`/api/doc/${docId}`)

@@ -4,7 +4,12 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
+import io from 'socket.io-client'
 
+const api_url: string = process.env.NEXT_PUBLIC_API_URL || ""
+const user_id: string = process.env.NEXT_PUBLIC_USER_ID || ""
+
+const socket = io(api_url)
 
 interface Document {
     _id: string
@@ -13,16 +18,13 @@ interface Document {
     updatedAt: Date
 }
 
-
 export default function Dashboard() {
     const router = useRouter()
-    const api = "http://localhost:5051/api"
+    const api = api_url
     const [documents, setDocuments] = useState<Document[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const userid = '668cedaaa3b2e1507b0d54e3'
-
-
+    const userid = user_id
 
     useEffect(() => {
         const fetchDocuments = async () => {
@@ -32,7 +34,7 @@ export default function Dashboard() {
                     throw new Error('Failed to fetch documents')
                 }
                 const data = await res.json()
-                const sortedDocs = await [...data].sort((a,b) => {return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()})
+                const sortedDocs = [...data].sort((a,b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
                 setDocuments(sortedDocs)
                 setIsLoading(false)
             } catch (err) {
@@ -42,8 +44,20 @@ export default function Dashboard() {
         }
 
         fetchDocuments()
-    }, [userid])
 
+        socket.on('document_updated', (data) => {
+            setDocuments(prevDocs => {
+                const updatedDocs = prevDocs.map(doc => 
+                    doc._id === data.docId ? { ...doc, title: data.title, updatedAt: new Date() } : doc
+                )
+                return [...updatedDocs].sort((a,b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+            })
+        })
+
+        return () => {
+            socket.off('document_updated')
+        }
+    }, [userid])
 
     const handleDelete = async (_id: string) => {
         try {
@@ -58,7 +72,7 @@ export default function Dashboard() {
                 throw new Error('Failed to delete document')
             }
 
-            const delConfirm = await res.json()
+            await res.json()
             toast.success('Document deleted successfully!', {
                 position: 'top-right',
                 autoClose: 3000,
@@ -97,12 +111,10 @@ export default function Dashboard() {
                 throw new Error('Failed to create a new document')
             }
 
-            res.json().then((newDoc) => {
-                if (newDoc && newDoc._id) {
-                    router.push(`/editor/${newDoc._id}`)
-                }
-            })
-             
+            const newDoc = await res.json()
+            if (newDoc && newDoc._id) {
+                router.push(`/editor/${newDoc._id}`)
+            }
         } catch (error) {
             setError('Error creating a new document. Please try again later.')
             console.error('Error:', error)
@@ -143,7 +155,6 @@ export default function Dashboard() {
                                         {doc.title}
                                     </Link>
                                 </td>
-
                                 <td className="px-6 py-4">{doc.author}</td>
                                 <td className="px-6 py-4 text-sm text-gray-500">
                                     {new Date(doc.updatedAt).toLocaleDateString()}
@@ -166,7 +177,6 @@ export default function Dashboard() {
                     </tbody>
                 </table>
             </div>
-
         </div>
     )
 }
