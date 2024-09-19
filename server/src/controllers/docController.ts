@@ -80,30 +80,34 @@ export const cr8Doc = async (req: Request, res: Response) => {
     }
 }
 
-export const upd8Doc = async (req: Request, res: Response) => {
-    const docid = req.params.id
 
-    console.log('patching document with id: ', docid)
+// ####################  upd8Doc is no longer needed as it is  ####################
+// ####################  handeled by websocket in docRoute.ts  ####################
 
-    try {
-        const { title, content } = req.body
-        const doc = await Docmnt.findById(docid)
+// export const upd8Doc = async (req: Request, res: Response) => {
+//     const docid = req.params.id
 
-        if (!doc) {
-            return res.status(404).json({ message: 'Document not found' })
-        }
+//     console.log('patching document with id: ', docid)
 
-        doc.title = title
-        doc.content = content
-        doc.version += 0.1
+//     try {
+//         const { title, content } = req.body
+//         const doc = await Docmnt.findById(docid)
 
-        const updoc = await doc.save()
-        res.json(updoc)
-    } catch (error: Error | any) {
-        console.error('Error updating document:', error)
-        res.status(500).json({ error })
-    }
-}
+//         if (!doc) {
+//             return res.status(404).json({ message: 'Document not found' })
+//         }
+
+//         doc.title = title
+//         doc.content = content
+//         doc.version += 0.1
+
+//         const updoc = await doc.save()
+//         res.json(updoc)
+//     } catch (error: Error | any) {
+//         console.error('Error updating document:', error)
+//         res.status(500).json({ error })
+//     }
+// }
 
 export const del8Doc = async (req: Request, res: Response) => {
     const docid = req.params.id
