@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import Docmnt, { IDocmnt } from '../models/Doc'
-import User from '../models/Usr'
+import Docmnt, { IDocmnt } from '../models/Doc.js'
+import User from '../models/Usr.js'
 
 
 export const getDox = async (req: Request, res: Response) => {

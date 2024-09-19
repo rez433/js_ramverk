@@ -1,8 +1,8 @@
 import express from 'express'
 import { Server, Socket } from 'socket.io'
-import Docmnt from '../models/Doc'
+import Docmnt from '../models/Doc.js'
 
-import { getDox, getDoc, cr8Doc, del8Doc } from '../controllers/docController'
+import { getDox, getDoc, cr8Doc, del8Doc } from '../controllers/docController.js'
 
 
 const router = express.Router()
