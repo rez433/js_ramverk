@@ -9,7 +9,8 @@ export default function SignUp() {
 	const [name, setName] = useState('')
 	const [lastName, setLastName] = useState('')
 	const router = useRouter()
-	const api = "http://localhost:5051/auth/signup"
+	const baseApiUrl: string = process.env.NEXT_PUBLIC_API_URL || ''
+	const api = `${baseApiUrl}/auth/signup`
 
 
 	const handleSubmit = async (e: React.FormEvent) => {

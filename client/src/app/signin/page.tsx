@@ -9,7 +9,11 @@ export default function SignIn() {
   const [password, setPassword] = useState('')
   const router = useRouter()
   const { login } = useAuth()
-	const api = "http://localhost:5051/auth/login"
+
+	const baseApiUrl: string = process.env.NEXT_PUBLIC_API_URL || ''
+	const api = `${baseApiUrl}/auth/login`
+
+	console.log('login api is: ', api)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

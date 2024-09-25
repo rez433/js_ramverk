@@ -10,9 +10,9 @@ interface EditorProps {
 	docid: any
 	content: any
 	setContent: (content: any) => void
-	setQtxt: (qtxt: any) => void
-	emitChanges: (delta: any) => void
-	handleIncomingChanges: (handler: (txts: any) => void) => () => void
+	setQtxt: (qtxt: string) => void
+	emitChanges: (delta: Delta) => void
+	handleIncomingChanges: (handler: (txts: string) => void) => () => void
 }
 
 
