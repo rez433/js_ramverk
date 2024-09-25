@@ -30,7 +30,7 @@ describe('Document Controller', () => {
     let docId: any
 
     beforeEach(async () => {
-        const user = new User({ name: 'testuser', email: 'test@example.com' })
+        const user = new User({ name: 'testuser', email: 'test@example.com', lastName: 'lastname', password_hash: '$2b$10$RWZewoF1gnhirWSctFbXzewCR8bLsfyy1W6aek0JVErJmgAIA.ZCS' })
         await user.save()
         userId = user._id
 
