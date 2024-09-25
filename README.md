@@ -10,12 +10,15 @@ server side:
 - mongodb
 - mongoose
 - socket.io
+- jwt
+- bcrypt
 
 client side:
 - nextjs
 - quill
-- next-auth
+- socket.io-client
 - react-toastify
+- tailwindcss
 
 
 Testing is done using vitest and jest-dom for frontend and jest and supertest for api.  
@@ -38,6 +41,12 @@ Frontend is built with nextjs 14 with app router, wrapped inside `src` directory
   },
 
 ```
+Add a `.env`file to the root of client and assign api url. If server is running locally, then api url is your localhost server (http://localhost:5051) or if it is hosted on a server assign the server address without any port number.
+
+```
+NEXT_PUBLIC_API_URL = "ur api address"
+```
+
 
 
 ### Clone this repository:
