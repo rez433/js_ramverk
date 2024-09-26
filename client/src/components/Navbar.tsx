@@ -2,12 +2,10 @@
 
 import Link from 'next/link'
 import { useAuth } from '@/app/AuthContext'
-import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 export default function Navbar() {
 	const { isAuthenticated, user, logout } = useAuth()
-	const router = useRouter()
 
 	useEffect(() => {
 		console.log("User:", user)
