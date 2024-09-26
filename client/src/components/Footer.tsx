@@ -6,7 +6,7 @@ const Footer = () => {
 					@2024 rezaee
 				</p>
 				<h3>Blog</h3>
-				<a href="https://rjtech.com/blog">RJTech</a>
+				<a href="https://rjtech.dev/blog">RJTech</a>
 			</div>
 		</footer>
 	)
