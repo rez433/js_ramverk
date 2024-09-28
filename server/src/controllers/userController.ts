@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
-import User, { IUser } from '../models/Usr.js'
+import Writer, { IWriter } from '../models/writer.js'
 import bcrypt from 'bcrypt'
 
 
-const checkUser = async (userEmail: string, password: string): Promise<IUser | null> => {
+const checkUser = async (userEmail: string, password: string): Promise<IWriter | null> => {
 	try {
-		const existingUser: IUser | null = await User.findOne({ email: userEmail })
+		const existingUser: IWriter | null = await Writer.findOne({ email: userEmail })
 
 		if (!existingUser) {
 			return null;
@@ -44,7 +44,7 @@ export const cr8Usr = async (req: Request, res: Response) => {
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 10)
-		const user = new User({ name, lastName, email: userEmail, password_hash: hashedPassword })
+		const user = new Writer({ name, lastName, email: userEmail, password_hash: hashedPassword })
 
 		await user.save()
 
@@ -64,7 +64,7 @@ export const upd8Usr = async (req: Request, res: Response) => {
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 10)
-		const updatedUser = await User.findByIdAndUpdate(existingUser._id, { email: userEmail, password_hash: hashedPassword, name, lastName }, { new: true })
+		const updatedUser = await Writer.findByIdAndUpdate(existingUser._id, { email: userEmail, password_hash: hashedPassword, name, lastName }, { new: true })
 		if (!updatedUser) {
 			return res.status(404).json({ message: 'User not found' })
 		}
@@ -78,7 +78,7 @@ export const upd8Usr = async (req: Request, res: Response) => {
 export const del8Usr = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params
-		await User.findByIdAndDelete(id)
+		await Writer.findByIdAndDelete(id)
 		res.json({ message: 'User deleted successfully' })
 	} catch (error) {
 		res.status(500).json({ message: 'Error deleting user', error })

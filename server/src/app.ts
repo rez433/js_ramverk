@@ -7,7 +7,6 @@ import { Server } from 'socket.io'
 import docRoute, { soket } from './routes/docRoute.js'
 import userRoute from './routes/userRoute.js'
 
-
 const PORT = process.env.PORT || 5000
 const app = express()
 const server = http.createServer(app)
@@ -23,13 +22,10 @@ app.use(express.json())
 app.use('/api', docRoute)
 app.use('/auth', userRoute)
 
-// MongoDB
 mongoose.connect(process.env.MONGODB_URI as string)
 	.then(() => console.log('Connected to MongoDB'))
 	.catch((err) => console.error('MongoDB connection error:', err))
 
-
-// using socket.io to update the document
 soket(io)
 
 server.listen(PORT, () => {

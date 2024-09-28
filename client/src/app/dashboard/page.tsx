@@ -4,23 +4,38 @@ import { useAuth } from '@/app/AuthContext'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { toast } from 'react-toastify'
-import { useRouter } from 'next/navigation'
 import io from 'socket.io-client'
+import { useRouter } from 'next/navigation'
 
-
-const baseApiUrl: string = process.env.NEXT_PUBLIC_API_URL || ''
-const socket = io(baseApiUrl)
+const socket = io('http://localhost:5051')
 
 interface Document {
 	_id: string
 	title: string
-	author: string
+	author: {
+		_id: string
+		name: string
+		lastName: string
+		email: string
+		role: string
+	}
+	co_authors: [
+		{
+			_id: string
+			name: string
+			lastName: string
+			email: string
+			role: string
+		}
+	]
+	createdAt: Date
 	updatedAt: Date
 }
 
 export default function Dashboard() {
 	const { isAuthenticated, user } = useAuth()
 	const router = useRouter()
+	const api = "http://localhost:5051/api"
 	const [documents, setDocuments] = useState<Document[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
@@ -29,7 +44,7 @@ export default function Dashboard() {
 		const fetchDocuments = async () => {
 			if (!user || !isAuthenticated) return
 			try {
-				const res = await fetch(`${baseApiUrl}/api/docs/${user.id}`)
+				const res = await fetch(`${api}/docs/${user.id}`)
 				if (!res.ok) {
 					throw new Error('Failed to fetch documents')
 				}
@@ -61,7 +76,7 @@ export default function Dashboard() {
 
 	const handleDelete = async (_id: string) => {
 		try {
-			const res = await fetch(`${baseApiUrl}/api/doc/delete/${_id}`, {
+			const res = await fetch(`${api}/doc/delete/${_id}`, {
 				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json'
@@ -97,7 +112,7 @@ export default function Dashboard() {
 		if (!user || !isAuthenticated) return
 		
 		try {
-			const res = await fetch(`${baseApiUrl}/api/doc/new`, {
+			const res = await fetch(`${api}/doc/new`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -144,6 +159,7 @@ export default function Dashboard() {
 						<tr className="bg-gray-200 text-left">
 							<th className="px-6 py-4">Title</th>
 							<th className="px-6 py-4">Author</th>
+							<th className="px-6 py-4">Co Authors</th>
 							<th className="px-6 py-4">Last Edited</th>
 							<th className="px-6 py-4"></th>
 							<th className="px-6 py-4"></th>
@@ -157,7 +173,8 @@ export default function Dashboard() {
 										{doc.title}
 									</Link>
 								</td>
-								<td className="px-6 py-4">{doc.author}</td>
+								<td className="px-6 py-4">{doc.author.name + ' ' + doc.author.lastName}</td>
+								<td className="px-6 py-4">{doc.co_authors? doc.co_authors.map((coAuthor) => coAuthor.name + ' ' + coAuthor.lastName) : ''}</td>
 								<td className="px-6 py-4 text-sm text-gray-500">
 									{new Date(doc.updatedAt).toLocaleDateString()}
 								</td>

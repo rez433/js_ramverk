@@ -1,17 +1,17 @@
 import mongoose, { Schema, Document } from 'mongoose'
-import { IDocmnt } from './Doc.js'
+import { IArticle } from './article.js'
 
-export interface IUser {
+export interface IWriter {
 	_id: string;
 	email: string;
 	password_hash: string;
 	name: string;
 	lastName: string;
 	role: string;
-	documents: IDocmnt[];
+	documents: IArticle[];
 }
 
-const UserSchema: Schema = new Schema({
+const WriterSchema: Schema = new Schema({
 	name: {
 		type: String,
 		required: true
@@ -40,4 +40,4 @@ const UserSchema: Schema = new Schema({
 	}]
 })
 
-export default mongoose.model<IUser>('users', UserSchema)
+export default mongoose.model<IWriter>('writer', WriterSchema)
