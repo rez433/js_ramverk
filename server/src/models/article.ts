@@ -1,18 +1,18 @@
 import mongoose, { Schema, Document } from 'mongoose'
-import {IUser} from './Usr.js'
+import {IWriter} from './writer.js'
 
 
-export interface IDocmnt extends Document {
+export interface IArticle extends Document {
 	title: string
 	content: string
-	author: IUser
-	co_authors: IUser[]
+	author: IWriter
+	co_authors: IWriter[]
 	createdAt: Date
 	updatedAt: Date
 	version: number
 }
 
-const DocmntSchema: Schema = new Schema({
+const ArticleSchema: Schema = new Schema({
 	title: {
 		type: String,
 		required: true
@@ -22,12 +22,12 @@ const DocmntSchema: Schema = new Schema({
 	},
 	author: {
 		type: Schema.Types.ObjectId,
-		ref: 'User',
+		ref: 'writer',
 		required: true
 	},
 	co_authors: [{
 		type: Schema.Types.ObjectId,
-		ref: 'User'
+		ref: 'writer'
 	}],
 	version: {
 		type: Number,
@@ -36,4 +36,4 @@ const DocmntSchema: Schema = new Schema({
 }, { timestamps: true })
 
 
-export default mongoose.model<IDocmnt>('txts', DocmntSchema)
+export default mongoose.model<IArticle>('article', ArticleSchema)

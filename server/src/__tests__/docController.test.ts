@@ -4,8 +4,8 @@ import express from 'express'
 import mongoose from 'mongoose'
 import { getDox, getDoc, cr8Doc, del8Doc } from '../controllers/docController'
 import * as dbHandler from './setup'
-import Docmnt from '../models/Doc'
-import User from '../models/Usr'
+import Docmnt from '../models/article'
+import User from '../models/writer'
 
 
 

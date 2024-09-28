@@ -17,8 +17,6 @@ export default function EditorPage() {
 	const params = useParams()
 	const docid = params.id
 
-	const baseApiUrl: string = process.env.NEXT_PUBLIC_API_URL || ''
-
 	useEffect(() => {
 		const fetchDocument = async () => {
 			if (!docid) {
@@ -27,7 +25,7 @@ export default function EditorPage() {
 			}
 
 			try {
-				const response = await fetch(`${baseApiUrl}/api/doc/${docid}`)
+				const response = await fetch(`http://localhost:5051/api/doc/${docid}`)
 				if (!response.ok) {
 					throw new Error('Failed to fetch document')
 				}
@@ -44,7 +42,7 @@ export default function EditorPage() {
 
 		// websocket setup
 		const setupSocket = () => {
-			const newSocket: Socket<any, any> = io(baseApiUrl)
+			const newSocket: Socket<any, any> = io('http://localhost:5051')
 			setSocket(newSocket)
 			return () => {
 				newSocket.disconnect()
