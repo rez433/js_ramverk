@@ -4,10 +4,11 @@ import { useAuth } from '@/app/AuthContext'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { toast } from 'react-toastify'
-import io from 'socket.io-client'
 import { useRouter } from 'next/navigation'
+import io from 'socket.io-client'
 
-const socket = io('http://localhost:5051')
+const baseApiUrl: string = process.env.NEXT_PUBLIC_API_URL || ''
+const socket = io(baseApiUrl)
 
 interface Document {
 	_id: string
@@ -35,7 +36,6 @@ interface Document {
 export default function Dashboard() {
 	const { isAuthenticated, user } = useAuth()
 	const router = useRouter()
-	const api = "http://localhost:5051/api"
 	const [documents, setDocuments] = useState<Document[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
@@ -44,7 +44,7 @@ export default function Dashboard() {
 		const fetchDocuments = async () => {
 			if (!user || !isAuthenticated) return
 			try {
-				const res = await fetch(`${api}/docs/${user.id}`)
+				const res = await fetch(`${baseApiUrl}/api/docs/${user.id}`)
 				if (!res.ok) {
 					throw new Error('Failed to fetch documents')
 				}
@@ -76,7 +76,7 @@ export default function Dashboard() {
 
 	const handleDelete = async (_id: string) => {
 		try {
-			const res = await fetch(`${api}/doc/delete/${_id}`, {
+			const res = await fetch(`${baseApiUrl}/api/doc/delete/${_id}`, {
 				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json'
@@ -112,7 +112,7 @@ export default function Dashboard() {
 		if (!user || !isAuthenticated) return
 		
 		try {
-			const res = await fetch(`${api}/doc/new`, {
+			const res = await fetch(`${baseApiUrl}/api/doc/new`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
