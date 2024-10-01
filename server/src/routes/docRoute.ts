@@ -18,6 +18,10 @@ router.get('/doc/:id', getDoc)
 // Post a new Doc
 router.post('/doc/new', cr8Doc)
 
+router.use((req, res) => {
+  res.status(404).send('404: Page Not Found');
+})
+
 // Patch doc is handled by websocket
 export const soket = (io: Server) => {
 	io.on('connection', (socket: Socket) => {

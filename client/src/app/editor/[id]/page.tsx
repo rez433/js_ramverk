@@ -114,7 +114,7 @@ export default function EditorPage() {
 
 		toast.success('Document saved successfully!', {
 			position: 'top-right',
-			autoClose: 3000,
+			autoClose: 1800,
 			hideProgressBar: false,
 			closeOnClick: true,
 			pauseOnHover: true,

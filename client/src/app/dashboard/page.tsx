@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import io from 'socket.io-client'
 
-const baseApiUrl: string = process.env.NEXT_PUBLIC_API_URL || ''
+const baseApiUrl: string = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || ''
 const socket = io(baseApiUrl)
 
 interface Document {
@@ -44,15 +44,40 @@ export default function Dashboard() {
 		const fetchDocuments = async () => {
 			if (!user || !isAuthenticated) return
 			try {
-				const res = await fetch(`${baseApiUrl}/api/docs/${user.id}`)
+				const res = await fetch(`${baseApiUrl}/graphql`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						query: `
+						query docsQuery($id: ID!) {
+							articles(authorId: $id) {
+								title, content, createdAt, updatedAt, _id
+								author {
+									name, lastName
+								}, co_authors {
+									name, lastName
+								}
+							}
+						}
+						`,
+						variables: {
+							"id": user.id
+						}
+					})
+				})
+
 				if (!res.ok) {
 					throw new Error('Failed to fetch documents')
 				}
 				const data = await res.json()
-				const sortedDocs = [...data].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+				const sortedDocs = [...data.data.articles].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
 				setDocuments(sortedDocs)
 				setIsLoading(false)
-			} catch (err) {
+			}
+
+			catch (err) {
 				setError('Error fetching documents. Please try again later.')
 				setIsLoading(false)
 			}
@@ -76,11 +101,23 @@ export default function Dashboard() {
 
 	const handleDelete = async (_id: string) => {
 		try {
-			const res = await fetch(`${baseApiUrl}/api/doc/delete/${_id}`, {
-				method: 'DELETE',
+			const res = await fetch(`${baseApiUrl}/graphql`, {
+				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
-				}
+				},
+				body: JSON.stringify({
+					query: `
+						mutation del8Doc($id: ID!) {
+							del8Doc(_id: $id) {
+								_id
+							}
+						}
+					`,
+					variables: {
+						"_id": _id
+					}
+				})
 			})
 
 			if (!res.ok) {
@@ -90,7 +127,7 @@ export default function Dashboard() {
 			await res.json()
 			toast.success('Document deleted successfully!', {
 				position: 'top-right',
-				autoClose: 3000,
+				autoClose: 1800,
 				hideProgressBar: false,
 				closeOnClick: true,
 				pauseOnHover: true,
@@ -110,7 +147,7 @@ export default function Dashboard() {
 
 	const fetchNewId = async () => {
 		if (!user || !isAuthenticated) return
-		
+
 		try {
 			const res = await fetch(`${baseApiUrl}/api/doc/new`, {
 				method: 'POST',
@@ -174,7 +211,7 @@ export default function Dashboard() {
 									</Link>
 								</td>
 								<td className="px-6 py-4">{doc.author.name + ' ' + doc.author.lastName}</td>
-								<td className="px-6 py-4">{doc.co_authors? doc.co_authors.map((coAuthor) => coAuthor.name + ' ' + coAuthor.lastName) : ''}</td>
+								<td className="px-6 py-4">{doc.co_authors ? doc.co_authors.map((coAuthor) => coAuthor.name + ' ' + coAuthor.lastName) : ''}</td>
 								<td className="px-6 py-4 text-sm text-gray-500">
 									{new Date(doc.updatedAt).toLocaleDateString()}
 								</td>
