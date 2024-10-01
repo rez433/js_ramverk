@@ -57,55 +57,61 @@ export default function EditorPage() {
 
 
 	const handlePrint = () => {
-		const prntr = window.open("prntr", "status=1", 'width=800,height=600')
+		const prntr = window.window.open('', '')
 
 		if (prntr) {
-			prntr.document.write(`
-                            <html>
-															<head>
-																<title>${title}</title>
-																<style>
-																	img {
-																		display: block;
-																		max-width: 210mm;
-																		max-height: 297mm;
-																		width: auto;
-																		height: auto;
-																	}
-																	@page {
-																		margin: 1in;
-																		size: 210mm 297mm;
-																		padding: 24mm 16mm 16mm 16mm;
-																	}
-																	@media print {
-																		table {
-																			page-break-inside: avoid;
-																		}
-																		a[href]:after {
-																			content: " (" attr(href) ")";
-																			font-size: 90%;
-																			color: #333;
-																		}
-																	}
-																</style>
-															</head>
-															<body>
-																<main>
-																	<div>
-																		<h1>${title}<h1>
-																	</div>
-																	<article>${qtxt}</article>
-																</main>
-														`);
-
-
-			prntr.onbeforeprint = () => {
-				prntr.history.replaceState({}, "", `./${title}`);
-			}
-			prntr.document.write('<body onafterprint="self.close()">');
-			prntr.document.write(`</body></html>`)
-			prntr.print();
+			prntr.document.write( 
+			`
+				<!DOCTYPE html>
+				<head>
+					<title>${title}</title>
+					<style>
+						img {
+							display: block;
+							max-width: 160mm;
+							max-height: 220mm;
+							width: auto;
+							height: auto;
+						}
+						@page {
+							margin: 1in;
+							size: 210mm 297mm;
+							padding: 24mm 16mm 16mm 16mm;
+						}
+						@media print {
+							table {
+								page-break-inside: avoid;
+							}
+							a[href]:after {
+								content: " (" attr(href) ")";
+								font-size: 90%;
+								color: #333;
+							}
+						}
+					</style>
+				</head>
+				<body onbeforeprint="self.history.pushState({}, '', './${title}')" onafterprint="self.close()">
+					<main>
+						<div>
+							<h1>${title}<h1>
+						</div>
+						<article>${qtxt}</article>
+					</main>
+				</body>
+				</html>
+			`)
+			prntr.print()
 		}
+			
+		toast.success('Document printed successfully!', {
+			position: 'top-right',
+			autoClose: 1800,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+		})
 	}
 
 	const handleSave = async () => {
