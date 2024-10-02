@@ -26,7 +26,10 @@ export default function Dashboard() {
 
 	useEffect(() => {
 		const fetchDocuments = async () => {
-			if (!user || !isAuthenticated) return
+			if (!user || !isAuthenticated) {
+				router.push('/signin')
+				return
+			}
 			try {
 				const res = await fetch(`${api}/docs/${user.id}`)
 				if (!res.ok) {
