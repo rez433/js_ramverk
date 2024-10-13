@@ -4,8 +4,10 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface User {
-  id: string;
-  username: string;
+  id: string
+  name: string
+	email: string
+	role: string
 }
 
 interface AuthContextType {
@@ -28,8 +30,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    const storedUser = localStorage.getItem('user')
+    const token = sessionStorage.getItem('token')
+    const storedUser = sessionStorage.getItem('user')
     if (token && storedUser) {
       setIsAuthenticated(true)
       setUser(JSON.parse(storedUser))
@@ -37,15 +39,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [])
 
   const login = (token: string, user: User) => {
-    localStorage.setItem('token', token)
-    localStorage.setItem('user', JSON.stringify(user))
+    sessionStorage.setItem('token', token)
+    sessionStorage.setItem('user', JSON.stringify(user))
     setIsAuthenticated(true)
     setUser(user)
   }
 
   const logout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('user')
     setIsAuthenticated(false)
     setUser(null)
     router.push('/')

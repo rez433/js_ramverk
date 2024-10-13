@@ -42,10 +42,6 @@ export default function Dashboard() {
 
 	useEffect(() => {
 		const fetchDocuments = async () => {
-			if (!user || !isAuthenticated) {
-				router.push('/signin')
-				return
-			}
 			try {
 				const res = await fetch(`${baseApiUrl}/graphql`, {
 					method: 'POST',
@@ -66,7 +62,7 @@ export default function Dashboard() {
 						}
 						`,
 						variables: {
-							"id": user.id
+							"id": user?.id
 						}
 					})
 				})
@@ -81,12 +77,20 @@ export default function Dashboard() {
 			}
 
 			catch (err) {
-				setError('Error fetching documents. Please try again later.')
-				setIsLoading(false)
+				try {
+					router.refresh()
+				}
+				catch (err) {
+					setError('Error fetching documents. Please try again later.')
+					console.error('Error:', err)
+					setIsLoading(false)
+				}
 			}
+
 		}
 
 		fetchDocuments()
+
 
 		socket.on('document_updated', (data) => {
 			setDocuments(prevDocs => {
@@ -149,11 +153,6 @@ export default function Dashboard() {
 	}
 
 	const fetchNewId = async () => {
-		if (!user || !isAuthenticated) {
-			router.push('/signin')
-			return
-		}
-
 		try {
 			const res = await fetch(`${baseApiUrl}/api/doc/new`, {
 				method: 'POST',
@@ -163,7 +162,7 @@ export default function Dashboard() {
 				body: JSON.stringify({
 					title: 'Untitled',
 					content: {},
-					authorId: user.id,
+					authorId: user?.id,
 				}),
 			})
 

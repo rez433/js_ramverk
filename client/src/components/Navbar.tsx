@@ -8,7 +8,6 @@ export default function Navbar() {
 	const { isAuthenticated, user, logout } = useAuth()
 
 	useEffect(() => {
-		console.log("User:", user)
 	}, [isAuthenticated, user])
 
 	const handleLogout = () => {
