@@ -23,12 +23,12 @@
 	display: none;
 }
 
-.ql-editor {
+.ql-snow .ql-editor {
 	width: 210mm;
 	min-height: 297mm;
 	line-height: 1.5;
 	background: rgb(var(--background-end-rgb));
-	padding: 24mm 16mm 16mm 16mm;
+	padding: 24mm 24mm 24mm 24mm;
 }
 
 .ql-toolbar {
@@ -44,7 +44,7 @@
 
 .cstomBtn {
 	display: flex;
-	max-width: 8rem;
+	max-width: 14rem;
 	gap: 1.5rem;
 	padding-right: 1rem;
 }

@@ -18,7 +18,7 @@ export default function EditorPage() {
 	const docid = params.id
 
 	const baseApiUrl: string = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || ''
-		
+
 	useEffect(() => {
 		const fetchDocument = async () => {
 			if (!docid) {
@@ -60,8 +60,8 @@ export default function EditorPage() {
 		const prntr = window.window.open('', '')
 
 		if (prntr) {
-			prntr.document.write( 
-			`
+			prntr.document.write(
+				`
 				<!DOCTYPE html>
 				<head>
 					<title>${title}</title>
@@ -102,7 +102,7 @@ export default function EditorPage() {
 			`)
 			prntr.print()
 		}
-			
+
 		toast.success('Document printed successfully!', {
 			position: 'top-right',
 			autoClose: 1800,
@@ -112,6 +112,10 @@ export default function EditorPage() {
 			draggable: true,
 			progress: undefined,
 		})
+	}
+
+	const handleCod = () => {
+		setQtxt(content)
 	}
 
 	const handleSave = async () => {
@@ -159,6 +163,7 @@ export default function EditorPage() {
 					placeholder="Enter document title"
 				/>
 				<div className='cstomBtn'>
+					<button className="codbtn" onClick={handleCod}>Code</button>
 					<button className="prnt" onClick={handlePrint}>Print</button>
 					<button className="savebtn" onClick={handleSave}>Save</button>
 				</div>

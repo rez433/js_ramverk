@@ -10,6 +10,8 @@
     "test": "vitest --coverage"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.6.0",
+    "monaco-editor": "^0.52.0",
     "next": "14.2.10",
     "quill": "^2.0.2",
     "react": "^18.3.1",

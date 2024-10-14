@@ -23,6 +23,7 @@ const toolbarOptions = [
 	[{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
 	[{ 'indent': '-1' }, { 'indent': '+1' }],
 	[{ 'color': [] }, { 'background': [] }],
+	['blockquote', 'code-block'],
 	['clean']
 ];
 

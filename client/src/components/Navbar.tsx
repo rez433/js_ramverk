@@ -17,21 +17,21 @@ export default function Navbar() {
 
 	return (
 		<nav className="bg-gray-800 p-4 w-full mb-4">
-			<div className="container flex justify-between items-center">
+			<div className="container flex justify-between items-center w-full">
 				<Link href="/" className="text-white">
 					Collaborative Editor
 				</Link>
-				<div>
+				<div className='w-auto'>
 					{isAuthenticated && user ? (
 						<>
 							<Link href={`/dashboard`}>
-								<button className="py-2 px-2 rounded mr-2 pen-btn">
+								<button className="py-2 rounded mr-2 pen-btn">
 									Dashboard
 								</button>
 							</Link>
 							<button
 								onClick={handleLogout}
-								className="py-2 px-2 rounded pen-btn"
+								className="py-2 rounded pen-btn"
 							>
 								Log out
 							</button>
