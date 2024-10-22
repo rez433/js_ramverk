@@ -5,7 +5,22 @@ import { toast } from 'react-toastify'
 import { io, Socket } from 'socket.io-client'
 import { useParams } from 'next/navigation'
 import Editor from '@/components/Editor'
+import { useAuth } from '@/app/AuthContext'
 
+
+interface Comment {
+	id: string
+	commenter: {
+		name: string
+		lastName: string
+	}
+	text: string
+	range: {
+		index: number
+		length: number
+	}
+	createdAt: string
+}
 
 export default function EditorPage() {
 	const [isLoading, setIsLoading] = useState(true)
@@ -13,9 +28,13 @@ export default function EditorPage() {
 	const [socket, setSocket] = useState<Socket<any, any> | null>(null)
 	const [title, setTitle] = useState('')
 	const [content, setContent] = useState('')
+	const [newCmnt, setNewCmnt] = useState({})
+	const [cmnt, setCmnt] = useState([] as Comment[])
 	const [qtxt, setQtxt] = useState('')
 	const params = useParams()
 	const docid = params.id
+	const { user } = useAuth()
+
 
 	const baseApiUrl: string = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || ''
 
@@ -27,14 +46,53 @@ export default function EditorPage() {
 			}
 
 			try {
-				const response = await fetch(`${baseApiUrl}/api/doc/${docid}`)
+				const response = await fetch(`${baseApiUrl}/graphql`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						query: `
+							query Article($articleId: ID!) {
+								article(articleId: $articleId) {
+									title
+									content
+									author {
+										name
+										lastName
+									}
+									co_authors {
+										name
+										lastName
+									}
+									createdAt
+									updatedAt
+									comments {
+										_id
+										commenter {
+											name
+											lastName
+										}
+										content
+										range
+										createdAt				
+									}
+								}
+							}
+						`,
+						variables: { articleId: docid },
+					}),
+				})
 				if (!response.ok) {
 					throw new Error('Failed to fetch document')
 				}
 
-				const data = await response.json()
+				const d = await response.json()
+				const data = d.data.article
 				setTitle(data.title)
 				setContent(data.content)
+				setCmnt(data.comments)
+				console.log(data)
 			} catch (err) {
 				setError('Error fetching document. Please try again later.')
 			} finally {
@@ -152,9 +210,23 @@ export default function EditorPage() {
 		return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>
 	}
 
+	if (newCmnt && user) {
+		const newComment = {
+			...newCmnt,
+			commenter: {
+				id: user?.id
+			},
+			article: docid
+		}
+
+		if (socket) {
+			socket.emit('new_comment', newComment)
+		}
+	}
+
 	return (
-		<div className="container qeditor mx-auto p-4 max-w-4xl">
-			<div className='ttl-field'>
+		<div>
+			<div className='ttl-field mb-1'>
 				<input
 					type="text"
 					id="title"
@@ -173,8 +245,11 @@ export default function EditorPage() {
 				content={content}
 				setContent={setContent}
 				setQtxt={setQtxt}
+				setNewCmnt={setNewCmnt}
 				emitChanges={emitChanges}
 				handleIncomingChanges={handleIncomingChanges}
+				cmnt={cmnt}
+				setCmnt={setCmnt}
 			/>
 		</div>
 	)

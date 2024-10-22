@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 import {IWriter} from './writer.js'
+import {IComment} from './comment.js'
 
 
 export interface IArticle extends Document {
@@ -7,6 +8,7 @@ export interface IArticle extends Document {
 	content: string
 	author: IWriter
 	co_authors: IWriter[]
+	comments: IComment[]
 	createdAt: Date
 	updatedAt: Date
 	version: number
@@ -29,10 +31,10 @@ const ArticleSchema: Schema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'writer'
 	}],
-	version: {
-		type: Number,
-		default: 1
-	}
+	comments: [{
+		type: Schema.Types.ObjectId,
+		ref: 'comment'
+	}]
 }, { timestamps: true })
 
 
