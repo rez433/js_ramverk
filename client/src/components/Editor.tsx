@@ -31,15 +31,15 @@ const toolbarOptions = [
 	['cmntBtn']
 ]
 
-const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleIncomingChanges, cmnt, setCmnt}: EditorProps) => {
+const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleIncomingChanges, cmnt, setCmnt }: EditorProps) => {
 	const editorRef = useRef<HTMLDivElement | null>(null)
 	const [quill, setQuill] = useState<Quill | null>(null)
 	const isMounted = useRef(false)
 	useEffect(() => {
 		if (!isMounted.current) {
-      isMounted.current = true
-      return
-    }
+			isMounted.current = true
+			return
+		}
 
 		if (typeof window !== 'undefined' && editorRef.current && !quill) {
 			const quil = new Quill(editorRef.current, {
@@ -61,7 +61,7 @@ const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleI
 			})
 
 			setQuill(quil)
-			
+
 			const cmntBtn = document.querySelector('.ql-cmntBtn')
 
 			if (cmntBtn) {
@@ -73,18 +73,16 @@ const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleI
 </svg>`
 
 				cmntBtn.addEventListener('click', () => {
-					const prompt = window.prompt('Enter comment')
+					const rng = quil.getSelection()
 
-					if (prompt == null || prompt === '') {
-						return
-					} else {
-						const rng = quil.getSelection()
+					if (!rng) {
+						alert('Please select (highlight) the text or line you want to comment')
+					} else if (rng && rng.length > 0) {
+						const prompt = window.prompt('Enter comment')
 
-						if (rng) {
-							if (rng.length === 0) {
-								alert('Select the text or line you want to comment')
-							} else {
-
+						if (prompt == null || prompt === '') {
+							return
+						} else if (prompt) {
 								quil.formatText(rng.index, rng.length, {
 									cssClass: 'comment',
 									format: 'user',
@@ -100,8 +98,6 @@ const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleI
 								console.log(rng)
 							}
 						}
-					}
-					
 				})
 			}
 
@@ -137,20 +133,17 @@ const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleI
 	const hilite = (e: any) => {
 		e.preventDefault()
 		const index = parseInt(e.target.getAttribute('data-index'))
-  	const length = parseInt(e.target.getAttribute('data-length'))
+		const length = parseInt(e.target.getAttribute('data-length'))
 
 		if (!quill) return
 		quill.setSelection(index, length)
 		quill.scrollSelectionIntoView()
-
-		
-		
 	}
 
 	return (
 		<div className='w-full flex flex-row gap-1 editComment'>
 			<div>
-			<div ref={editorRef} />
+				<div ref={editorRef} />
 			</div>
 			<Comments setCmnt={setCmnt} cmnt={cmnt} hilite={hilite} />
 		</div>
