@@ -37,7 +37,7 @@ const Comments: React.FC<CommentsProps> = ({ setCmnt, cmnt, hilite }) => {
 								<span className="font-semibold">{c.commenter.name} {c.commenter.lastName}</span>
 							</div>
 							<a href="#" onClick={hilite}><p className="text-gray-700" data-index={c.range.index} data-length={c.range.length}>{c.content}</p></a>
-							<p className="text-gray-400 text-sm">{c.createdAt}</p>
+							<p className="text-gray-400 text-sm">{new Intl.DateTimeFormat('en-GB', {timeStyle: 'short', dateStyle: 'medium'}).format(new Date(c.createdAt))}</p>
 							<hr className="my-2" />
 						</div>
 					))}

@@ -15,6 +15,9 @@
 	min-width: 64mm;
 	width: 100%;
 }
+.ql-cmntBtn:hover {
+	filter: invert(29%) sepia(93%) saturate(6280%) hue-rotate(198deg) brightness(97%) contrast(101%);	
+}
 
 .ql-container {
 	font-family: 'Times New Roman', Times, serif;
@@ -23,7 +26,6 @@
 	min-width: 215mm;
 	width: 215mm;
 }
-
 
 .qeditor {
 	padding: 0;

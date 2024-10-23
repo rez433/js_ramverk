@@ -26,8 +26,8 @@ export default function EditorPage() {
 	const [socket, setSocket] = useState<Socket<any, any> | null>(null)
 	const [title, setTitle] = useState('')
 	const [content, setContent] = useState('')
-	const [newCmnt, setNewCmnt] = useState({})
-	const [cmnt, setCmnt] = useState([] as Comment[])
+	const [newCmnt, setNewCmnt] = useState<{} | null>(null)
+	const [cmnt, setCmnt] = useState<Comment[]>([])
 	const [qtxt, setQtxt] = useState('')
 	const params = useParams()
 	const docid = params.id
@@ -35,6 +35,7 @@ export default function EditorPage() {
 
 
 	const baseApiUrl: string = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || ''
+
 
 	useEffect(() => {
 		const fetchDocument = async () => {
@@ -209,14 +210,14 @@ export default function EditorPage() {
 		return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>
 	}
 
-	if (newCmnt) {
+	if (newCmnt !== null) {
 		console.log('new comment is ', newCmnt)
 
 		const newComment = {
-			content: newCmnt.content,
-			commenter: user.id,
+			content: (newCmnt as Comment).content,
+			commenter: user?.id,
 			article: docid,
-			range: newCmnt.range
+			range: (newCmnt as Comment).range
 		}
 
 		if (socket) {
@@ -224,7 +225,6 @@ export default function EditorPage() {
 			setNewCmnt(null)
 		}
 	}
-
 
 	return (
 		<div>
@@ -256,3 +256,4 @@ export default function EditorPage() {
 		</div>
 	)
 }
+
