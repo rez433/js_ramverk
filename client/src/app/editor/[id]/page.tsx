@@ -9,17 +9,15 @@ import { useAuth } from '@/app/AuthContext'
 
 
 interface Comment {
-	id: string
-	commenter: {
-		name: string
-		lastName: string
-	}
-	text: string
+	content: string
 	range: {
 		index: number
 		length: number
 	}
-	createdAt: string
+	commenter: {
+		_id: string
+	}
+	article: any
 }
 
 export default function EditorPage() {
@@ -87,6 +85,7 @@ export default function EditorPage() {
 					throw new Error('Failed to fetch document')
 				}
 
+				console.log('user is: ', user)
 				const d = await response.json()
 				const data = d.data.article
 				setTitle(data.title)
@@ -210,19 +209,22 @@ export default function EditorPage() {
 		return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>
 	}
 
-	if (newCmnt && user) {
+	if (newCmnt) {
+		console.log('new comment is ', newCmnt)
+
 		const newComment = {
-			...newCmnt,
-			commenter: {
-				id: user?.id
-			},
-			article: docid
+			content: newCmnt.content,
+			commenter: user.id,
+			article: docid,
+			range: newCmnt.range
 		}
 
 		if (socket) {
-			socket.emit('new_comment', newComment)
+			socket.emit('send_new_comment', newComment)
+			setNewCmnt(null)
 		}
 	}
+
 
 	return (
 		<div>

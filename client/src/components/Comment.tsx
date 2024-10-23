@@ -36,7 +36,7 @@ const Comments: React.FC<CommentsProps> = ({ setCmnt, cmnt, hilite }) => {
 							<div className="flex items-center mb-2">
 								<span className="font-semibold">{c.commenter.name} {c.commenter.lastName}</span>
 							</div>
-							<a href="#" data-index={c.range.index} onClick={hilite}><p className="text-gray-700">{c.content}</p></a>
+							<a href="#" onClick={hilite}><p className="text-gray-700" data-index={c.range.index} data-length={c.range.length}>{c.content}</p></a>
 							<p className="text-gray-400 text-sm">{c.createdAt}</p>
 							<hr className="my-2" />
 						</div>

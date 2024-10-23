@@ -35,7 +35,6 @@ const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleI
 	const editorRef = useRef<HTMLDivElement | null>(null)
 	const [quill, setQuill] = useState<Quill | null>(null)
 	const isMounted = useRef(false)
-
 	useEffect(() => {
 		if (!isMounted.current) {
       isMounted.current = true
@@ -54,6 +53,12 @@ const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleI
 				quil.updateContents(content)
 				setQtxt(quil.root.innerHTML)
 			}
+
+			quil.on('selection-change', (range) => {
+				if (range) {
+					quil.scrollSelectionIntoView()
+				}
+			})
 
 			setQuill(quil)
 			
@@ -87,9 +92,12 @@ const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleI
 								})
 
 								setNewCmnt({
-									text: prompt,
+									content: prompt,
 									range: rng
 								})
+
+								console.log(prompt)
+								console.log(rng)
 							}
 						}
 					}
@@ -126,8 +134,17 @@ const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleI
 		})
 	}, [quill, handleIncomingChanges])
 
-	const hilite = () => {
-		console.log('hilite is: ')
+	const hilite = (e: any) => {
+		e.preventDefault()
+		const index = parseInt(e.target.getAttribute('data-index'))
+  	const length = parseInt(e.target.getAttribute('data-length'))
+
+		if (!quill) return
+		quill.setSelection(index, length)
+		quill.scrollSelectionIntoView()
+
+		
+		
 	}
 
 	return (

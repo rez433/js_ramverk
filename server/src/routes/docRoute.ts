@@ -1,6 +1,8 @@
 import express from 'express'
 import { Server, Socket } from 'socket.io'
 import Docmnt from '../models/article.js'
+import Comment from '../models/comment.js'
+
 
 import { getDox, getDoc, cr8Doc, del8Doc } from '../controllers/docController.js'
 
@@ -19,7 +21,7 @@ router.get('/doc/:id', getDoc)
 router.post('/doc/new', cr8Doc)
 
 router.use((req, res) => {
-  res.status(404).send('404: Page Not Found');
+	res.status(404).send('404: Page Not Found');
 })
 
 // Patch doc is handled by websocket
@@ -52,6 +54,37 @@ export const soket = (io: Server) => {
 
 		socket.on('send_changes', delta => {
 			socket.broadcast.emit('get_changes', delta)
+		})
+
+		socket.on('send_new_comment', async (data: {
+			content: string;
+			article: string;
+			commenter: string;
+			range: { index: number; length: number };
+		}) => {
+			try {
+				console.log('new comment received: ', data)
+
+				if (!data.content || !data.article || !data.commenter) {
+					throw new Error('Missing required fields in the comment data.')
+				}
+				const newComment = new Comment({
+					content: data.content,
+					article: data.article,
+					commenter: data.commenter,
+					range: data.range
+				})
+
+				const savedComment = await newComment.save()
+
+				await Docmnt.findByIdAndUpdate(data.article, { $push: { comments: savedComment._id } })
+
+				socket.emit('get_new_comment', savedComment)
+				socket.broadcast.emit('get_new_comment', savedComment)
+			} catch (error: Error | any) {
+				console.error('Error saving new comment:', error)
+				socket.emit('error_saving_comment', { error: error.message })
+			}
 		})
 
 		socket.on('disconnect', () => {
