@@ -74,6 +74,7 @@ export const soket = (io: Server) => {
 				})
 
 				const savedComment = await newComment.save()
+				savedComment.populate('commenter')
 
 				await Docmnt.findByIdAndUpdate(data.article, { $push: { comments: savedComment._id } })
 
