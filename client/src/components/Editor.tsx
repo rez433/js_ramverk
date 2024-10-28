@@ -16,7 +16,6 @@ interface EditorProps {
 	emitChanges: (delta: Delta) => void
 	handleIncomingChanges: (handler: (txts: any) => void) => (() => void) | undefined
 	cmnt: any
-	setCmnt: any
 }
 
 const toolbarOptions = [
@@ -31,16 +30,11 @@ const toolbarOptions = [
 	['cmntBtn']
 ]
 
-const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleIncomingChanges, cmnt, setCmnt }: EditorProps) => {
+const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleIncomingChanges, cmnt }: EditorProps) => {
 	const editorRef = useRef<HTMLDivElement | null>(null)
 	const [quill, setQuill] = useState<Quill | null>(null)
-	const isMounted = useRef(false)
-	useEffect(() => {
-		if (!isMounted.current) {
-			isMounted.current = true
-			return
-		}
 
+	useEffect(() => {
 		if (typeof window !== 'undefined' && editorRef.current && !quill) {
 			const quil = new Quill(editorRef.current, {
 				theme: 'snow',
@@ -93,16 +87,13 @@ const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleI
 									content: prompt,
 									range: rng
 								})
-
-								console.log(prompt)
-								console.log(rng)
 							}
 						}
 				})
 			}
 
 		}
-	}, [quill])
+	}, [quill, setNewCmnt, setQtxt, content])
 
 	useEffect(() => {
 		if (quill == null) return
@@ -145,7 +136,7 @@ const Editor = ({ content, setContent, setQtxt, setNewCmnt, emitChanges, handleI
 			<div>
 				<div ref={editorRef} />
 			</div>
-			<Comments setCmnt={setCmnt} cmnt={cmnt} hilite={hilite} />
+			<Comments cmnt={cmnt} hilite={hilite} />
 		</div>
 	)
 }

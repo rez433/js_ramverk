@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { use } from 'react'
 
 interface Comment {
 	_id: string
@@ -17,14 +17,12 @@ interface Comment {
 }
 
 interface CommentsProps {
-	setCmnt: any
 	cmnt: Comment[]
 	hilite: any
 }
 
 
-const Comments: React.FC<CommentsProps> = ({ setCmnt, cmnt, hilite }) => {
-
+const Comments: React.FC<CommentsProps> = ({ cmnt, hilite }) => {
 	return (
 		<div>
 			<h3 className='text-center py-2 bg-white'>Comments</h3>

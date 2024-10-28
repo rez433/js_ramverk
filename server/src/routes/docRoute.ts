@@ -63,8 +63,6 @@ export const soket = (io: Server) => {
 			range: { index: number; length: number };
 		}) => {
 			try {
-				console.log('new comment received: ', data)
-
 				if (!data.content || !data.article || !data.commenter) {
 					throw new Error('Missing required fields in the comment data.')
 				}
@@ -82,7 +80,6 @@ export const soket = (io: Server) => {
 				socket.emit('get_new_comment', savedComment)
 				socket.broadcast.emit('get_new_comment', savedComment)
 			} catch (error: Error | any) {
-				console.error('Error saving new comment:', error)
 				socket.emit('error_saving_comment', { error: error.message })
 			}
 		})

@@ -1,6 +1,7 @@
 'use client'
 
 import { ToastContainer } from 'react-toastify'
+import { Suspense } from 'react'
 import 'react-toastify/dist/ReactToastify.css'
 import localFont from "next/font/local"
 import Navbar from '@/components/Navbar'
@@ -29,7 +30,9 @@ export default function RootLayout({
 					<main className="flex flex-col items-center justify-between ui_txt">
 						<ToastContainer />
 						<Navbar />
+						<Suspense fallback={<div>Loading...</div>}>
 						{children}
+						</Suspense>
 					</main>
 					<Footer />
 				</AuthProvider>

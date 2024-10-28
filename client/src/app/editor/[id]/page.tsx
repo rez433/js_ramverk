@@ -26,7 +26,7 @@ export default function EditorPage() {
 	const [socket, setSocket] = useState<Socket<any, any> | null>(null)
 	const [title, setTitle] = useState('')
 	const [content, setContent] = useState('')
-	const [newCmnt, setNewCmnt] = useState<{} | null>(null)
+	const [newCmnt, setNewCmnt] = useState(null)
 	const [cmnt, setCmnt] = useState<Comment[]>([])
 	const [qtxt, setQtxt] = useState('')
 	const params = useParams()
@@ -86,13 +86,11 @@ export default function EditorPage() {
 					throw new Error('Failed to fetch document')
 				}
 
-				console.log('user is: ', user)
 				const d = await response.json()
 				const data = d.data.article
 				setTitle(data.title)
 				setContent(data.content)
 				setCmnt(data.comments)
-				console.log(data)
 			} catch (err) {
 				setError('Error fetching document. Please try again later.')
 			} finally {
@@ -111,7 +109,7 @@ export default function EditorPage() {
 
 		fetchDocument()
 		return setupSocket()
-	}, [docid, baseApiUrl])
+	}, [docid, baseApiUrl, user])
 
 
 	const handlePrint = () => {
@@ -177,7 +175,6 @@ export default function EditorPage() {
 	}
 
 	const handleSave = async () => {
-		// emit the content when save button clicked
 		socket?.emit('update_doc', { 'content': content, 'title': title, 'docId': docid })
 
 		toast.success('Document saved successfully!', {
@@ -197,6 +194,7 @@ export default function EditorPage() {
 
 	const handleIncomingChanges = useCallback((handler: (txts: any) => void) => {
 		socket?.on('get_changes', handler)
+
 		return () => {
 			socket?.off('get_changes', handler)
 		}
@@ -211,8 +209,6 @@ export default function EditorPage() {
 	}
 
 	if (newCmnt !== null) {
-		console.log('new comment is ', newCmnt)
-
 		const newComment = {
 			content: (newCmnt as Comment).content,
 			commenter: user?.id,
@@ -224,8 +220,13 @@ export default function EditorPage() {
 			socket.emit('send_new_comment', newComment)
 			setNewCmnt(null)
 		}
+
 	}
 
+	socket?.on('get_new_comment', (newComment: any) => {
+		setCmnt([...cmnt, newComment])
+	})
+	
 	return (
 		<div>
 			<div className='ttl-field mb-1'>
@@ -242,6 +243,7 @@ export default function EditorPage() {
 					<button className="savebtn" onClick={handleSave}>Save</button>
 				</div>
 			</div>
+			{typeof window !== 'undefined'}
 			<Editor
 				docid={docid}
 				content={content}
@@ -251,7 +253,6 @@ export default function EditorPage() {
 				emitChanges={emitChanges}
 				handleIncomingChanges={handleIncomingChanges}
 				cmnt={cmnt}
-				setCmnt={setCmnt}
 			/>
 		</div>
 	)

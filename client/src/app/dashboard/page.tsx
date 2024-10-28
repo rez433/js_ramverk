@@ -104,7 +104,7 @@ export default function Dashboard() {
 		return () => {
 			socket.off('document_updated')
 		}
-	}, [user])
+	}, [user, router])
 
 	const handleDelete = async (_id: string) => {
 		try {
