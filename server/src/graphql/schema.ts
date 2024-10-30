@@ -37,6 +37,7 @@ const typeDefs = gql`
 
   type Query {
     articles(authorId: ID!): [Article!]!
+		co_articles(authorId: ID!): [Article!]!
 		author(authorId: ID!): Author!
 		article_comments(articleId: ID!): [Comment!]
 		article(articleId: ID!): Article
@@ -54,6 +55,7 @@ const typeDefs = gql`
 		cr8User(name: String!, lastName: String!, email: String!, password: String!): Author
 		upd8User(authorId: ID!, name: String, lastName: String, email: String, password: String): Author
 		del8User(authorId: ID!): Author
+		add_co_author(articleId: ID!, email: String!): Article
 	}
 `
 

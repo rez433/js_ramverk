@@ -27,18 +27,13 @@ router.use((req, res) => {
 // Patch doc is handled by websocket
 export const soket = (io: Server) => {
 	io.on('connection', (socket: Socket) => {
-		console.log(`A user connected with id: ${socket.id}`)
-
 		socket.on('join_doc', async (docId: string) => {
 			socket.join(docId)
-			console.log(`User joined document: ${docId}`)
 		})
 
 		socket.on('leave_doc', (docId: string) => {
 			socket.leave(docId)
-			console.log(`User left document: ${docId}`)
 		})
-
 
 		socket.on('update_doc', async (data: { docId: string; content: any; title: string }) => {
 			try {
@@ -75,9 +70,9 @@ export const soket = (io: Server) => {
 
 				const savedComment = await newComment.save()
 				savedComment.populate('commenter')
-
+				
 				await Docmnt.findByIdAndUpdate(data.article, { $push: { comments: savedComment._id } })
-
+				
 				socket.emit('get_new_comment', savedComment)
 				socket.broadcast.emit('get_new_comment', savedComment)
 			} catch (error: Error | any) {
@@ -86,7 +81,7 @@ export const soket = (io: Server) => {
 		})
 
 		socket.on('disconnect', () => {
-			console.log(`user ${socket.id} disconnected`)
+			// console.log(`user ${socket.id} disconnected`)
 		})
 	})
 }

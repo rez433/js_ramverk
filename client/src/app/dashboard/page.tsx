@@ -54,9 +54,9 @@ export default function Dashboard() {
 							articles(authorId: $id) {
 								title, content, createdAt, updatedAt, _id
 								author {
-									name, lastName
+									_id email name lastName
 								}, co_authors {
-									name, lastName
+									_id email name lastName
 								}
 							}
 						}
@@ -222,16 +222,37 @@ export default function Dashboard() {
 								</td>
 								<td className="px-6 py-4">
 									<Link href={`/editor/${doc._id}`} className="text-blue-600 hover:underline">
-										Edit
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" version="1.1" width="32" height="32">
+											<g transform="translate(1,1)">
+												<path className="ColorScheme-Text"
+													style={{
+														fill: 'currentColor',
+														fillOpacity: 1,
+														stroke: 'none'
+													}}
+													d="m 4,6 c 0,3 0,7 0,10 0,3 3,3 3,3 H 9 V 18 H 7 C 7,18 5,18 5,16 5,14 5,8 5,6 5,4 7,4 7,4 h 6 v 4 h 4 v 3 h 1 V 7 L 14,3 H 7 C 7,3 4,3 4,6 Z M 18.0002,12.9961 16,11 l -5.9921,5.9893 -0.008,1.9932 2.014,-0.002 z m -1.7051,0.2969 -4.9902,4.9824 -0.5937,-0.5918 4.9922,-4.9844 z" />
+											</g>
+										</svg>
 									</Link>
 								</td>
-								<td className="px-6 py-4">
-									<button
-										onClick={() => handleDelete(doc._id)}
-										className="text-red-600 hover:text-red-800"
-									>
-										Delete
-									</button>
+								<td className="px-6 py-4" >
+									{user && doc.author._id == user.id && (
+										<button
+											onClick={() => handleDelete(doc._id)}
+											className="text-red-600 hover:text-red-800"
+										>
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32">
+												<g transform="translate(1,1)">
+													<path style={{
+														fill: 'currentColor',
+														fillOpacity: 1,
+														stroke: 'none'
+													}}
+														className="ColorScheme-NegativeText" d="M 9,3 C 9,3 8,3 8,4 8,5 8,5 8,5 H 9 V 4 h 4 v 1 h 1 C 14,5 14,5 14,4 14,3 13,3 13,3 M 4,6 V 7 H 18 V 6 H 4 m 2,2 c 0,0 0,5 0,8 0,3 3,3 3,3 h 4 c 0,0 3,0 3,-3 0,-3 0,-8 0,-8 h -1 c 0,0 0,6 0,8 0,2 -2,2 -2,2 H 9 C 9,18 7,18 7,16 7,14 7,8 7,8 H 6" />
+												</g>
+											</svg>
+										</button>
+									)}
 								</td>
 							</tr>
 						))}

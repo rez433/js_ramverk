@@ -1,6 +1,6 @@
 'use client'
 
-import React, { use } from 'react'
+import React from 'react'
 
 interface Comment {
 	_id: string
@@ -16,21 +16,38 @@ interface Comment {
 	createdAt: string
 }
 
+interface coAuthor {
+	_id: string
+	name: string
+	lastName: string
+	email: string
+}
+
 interface CommentsProps {
 	cmnt: Comment[]
 	hilite: any
+	coAuthors: coAuthor[]
+	docAuthor: coAuthor
 }
 
-
-const Comments: React.FC<CommentsProps> = ({ cmnt, hilite }) => {
+const Comments: React.FC<CommentsProps> = ({ cmnt, hilite, coAuthors, docAuthor }) => {
 	return (
 		<div>
-			<h3 className='text-center py-2 bg-white'>Comments</h3>
+			<h3 className='text-center py-2 bg-white'>Authors and Comments</h3>
 			<hr />
 			<div className="cmnto h-[100%] overflow-y-auto">
-				<div className='ml-1 mr-2 h-[99%] mt-2 px-1.5 pt-24 bg-white'>
+				<div key="authors" className='ml-1 mr-2 mt-2 px-3 py-4 bg-white'>
+					<p><span>Author: </span> {docAuthor.name} {docAuthor.lastName}</p>
+					{coAuthors?.map((writer: coAuthor) => (
+						<div key={writer._id} className="mb-4">
+							<div className="flex items-center mb-2">
+								<span className="font-semibold">coAuthor: {writer.name} {writer.lastName}</span>
+							</div>
+						</div>
+					))}
+				</div>
+				<div className='ml-1 mr-2 h-[99%] mt-2 px-1.5 pt-4 bg-white'>
 					{cmnt?.map((c) => (
-						console.log(c),
 						<div key={c._id} className="mb-4">
 							<div className="flex items-center mb-2">
 								<span className="font-semibold">{c.commenter.name} {c.commenter.lastName}</span>
